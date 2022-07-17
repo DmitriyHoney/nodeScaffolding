@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <!-- Обязательные метатеги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <title>Scaffolding</title>
+  </head>
+  <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Scaffolding</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Схемы</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section>
+
+        <div class="container">
+            <div class="d-flex justify-content-end align-items-center">
+                <div>
+                    <a href="/typeCreate.html" class="btn btn-primary" id="editBtn">Создать</a>
+                </div>
+            </div>
+            <table class="table table-striped" id="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Наименование схемы</th>
+                    <th scope="col">Действия</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+              </table>
+        </div>
+    </section>
+
+    <script src="./bootstrap.js"></script>
+    <script src="./main.js"></script>
+    <script>
+        const $tableBody = document.getElementById('table-body');
+        const renderTable = (types) => {
+            types.forEach((item) => {
+                const $row = document.createElement('tr');
+                const $col1 = document.createElement('td');
+                $col1.textContent = item;
+
+                const $col2 = document.createElement('td');
+                $col2.innerHTML = `
+                    <a href="/typeDetail.html?name=${item}" class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="true">Редактировать</a>
+                    <a href="/entyties.html?name=${item}" class="btn btn-success btn-sm" tabindex="-1" role="button" aria-disabled="true">Объекты</a>
+                `;
+
+                $row.appendChild($col1);
+                $row.appendChild($col2);
+                $tableBody.appendChild($row);
+            });
+        };
+
+        api.getAllTypes().then((res) => {
+            renderTable(res);
+        });
+    </script>
+  </body>
+</html>

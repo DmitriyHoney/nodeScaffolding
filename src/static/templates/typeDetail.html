@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <!-- Обязательные метатеги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <title>Scaffolding</title>
+  </head>
+  <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Scaffolding</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Схемы</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section>
+        <div class="container">
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Код схемы</h5>
+                        <div>
+                            <a href="#" class="btn btn-primary text-right" id="editBtn">Редактировать</a>
+                            <a href="#" class="btn btn-danger text-right hide" id="cancelBtn">Отмена</a>
+                            <a href="#" class="btn btn-success text-right hide" id="saveBtn">Сохранить</a>
+                        </div>
+                    </div>
+                    <code style="font-size: 18px;">
+                      <xmp id="code"></xmp>
+                      <textarea id="textarea" class="hide form-control" style="width: 100%; min-height: 300px;"></textarea>
+                    </code>
+                </div>
+        </div>
+    </section>
+
+    <script src="./bootstrap.js"></script>
+    <script src="./main.js"></script>
+    <script>
+        const payload = prepareQuery();
+        const $code = document.getElementById('code');
+        const $textarea = document.getElementById('textarea');
+        const $editBtn = document.getElementById('editBtn');
+        const $cancelBtn = document.getElementById('cancelBtn');
+        const $saveBtn = document.getElementById('saveBtn');
+        $cancelBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            $textarea.value = '';
+            $cancelBtn.classList.add('hide');
+            $saveBtn.classList.add('hide');
+            $textarea.classList.add('hide');
+            $editBtn.classList.remove('hide');
+        });
+        $editBtn.addEventListener('click', (e) => {
+            const $code = document.getElementById('code');
+            e.preventDefault();
+            $textarea.classList.remove('hide');
+            $cancelBtn.classList.remove('hide');
+            $saveBtn.classList.remove('hide');
+            $editBtn.classList.add('hide');
+            $textarea.value = $code.textContent;
+        });
+        $saveBtn.addEventListener('click', (e) => {
+            api.updateType({ title: payload.name, data: JSON.parse($textarea.value)})
+                .then((res) => {
+                  $cancelBtn.classList.add('hide');
+                  $saveBtn.classList.add('hide');
+                  $textarea.classList.add('hide');
+                  $editBtn.classList.remove('hide');
+                  api.getTypeByName(payload)
+                    .then((res) => {
+                        console.log(res);
+                        $code.innerText = JSON.stringify(res, null, 2);
+                    })
+                    .catch(console.error)
+                })
+        });
+        api.getTypeByName(payload).then((res) => {
+            $code.innerText = JSON.stringify(res, null, 2);
+            api.getEntity()
+        });
+    </script>
+  </body>
+</html>

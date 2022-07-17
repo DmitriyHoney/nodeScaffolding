@@ -1,0 +1,1 @@
+{"Email":{"type":"text","control":"input","required":true,"unique":true},"Password":{"type":"password","control":"input","required":true},"UserName":{"type":"text","control":"input"}}

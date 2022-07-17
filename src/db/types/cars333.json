@@ -1,0 +1,1 @@
+{"Mark":{"type":"text","control":"input","required":true,"unique":true},"Model":{"type":"text","control":"input","required":true},"Year":{"type":"number","control":"input"}}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <!-- Обязательные метатеги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <title>Scaffolding</title>
+  </head>
+  <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Scaffolding</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Схемы</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section>
+        <div class="container">
+            <form id="form">
+                <div id="form-body"></div>
+                <button type="submit" id="btnSave" class="btn btn-primary">Создать</button>
+            </form>
+        </div>
+    </section>
+
+    <script src="./bootstrap.js"></script>
+    <script src="./main.js"></script>
+    <script>
+        const payload = prepareQuery();
+        const $formBody = document.getElementById('form-body');
+        const $form = document.getElementById('form');
+        $form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fData = new FormData($form);
+            const result = {};
+            for(let [name, value] of fData) {
+                result[name] = value;
+            }
+            api.createEntity({ name: payload.name, data: result }).then((title) => {
+                document.location.href = `/entityDetail.html?name=${payload.name}&id=${title}`;
+            });
+        });
+        const renderForm = (schemaObject) => {
+            $formBody.innerHTML = '';
+            Object.keys(schemaObject).forEach((key) => {
+                const $div = document.createElement('div');
+                $div.classList.add('mb-3');
+
+                const $label = document.createElement('label');
+                $label.classList.add('form-label');
+                $label.setAttribute('for', key);
+                $label.textContent = key;
+
+                const $input = document.createElement('input');
+                $input.classList.add('form-control');
+                $input.setAttribute('id', key);
+                $input.setAttribute('name', key);
+                $input.setAttribute('type', schemaObject[key].type);
+
+                $div.appendChild($label);
+                $div.appendChild($input);
+                $formBody.appendChild($div);
+            })
+        };
+        api.getTypeByName({ name: payload.name }).then((res) => {
+            renderForm(res);
+        });
+    </script>
+  </body>
+</html>
